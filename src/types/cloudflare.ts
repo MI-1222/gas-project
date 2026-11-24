@@ -33,9 +33,9 @@ export interface CloudflareApiSettings {
    */
   filters: Record<string, unknown>;
   /**
-   * 並び替え指定（nullを指定するとorderBy句を省略）。
+   * 並び替え指定（未指定またはnullを指定するとorderBy句を省略）。
    */
-  orderBy?: null;
+  orderBy?: string | null;
 }
 
 /**

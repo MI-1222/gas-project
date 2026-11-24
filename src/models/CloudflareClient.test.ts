@@ -50,13 +50,30 @@ describe("CloudflareClient", () => {
     });
     const query = client.buildGraphQLQuery(sampleAccountTask);
 
-    expect(query).toContain("query GetAccountAnalytics($accountTag: string!");
+    expect(query).toContain("query GetAccountAnalytics($accountTag: String!");
     expect(query).toContain(
       "AccountWorkersInvocationsAdaptiveFilter_InputObject",
     );
-    expect(query).toContain("orderBy: [datetime_ASC]");
+    expect(query).not.toContain("orderBy:");
     expect(query).toContain("sum { requests }");
     expect(query).toContain("quantiles { cpuTimeP50 }");
+  });
+
+  it("orderByが指定されている場合はorderBy句を付与する", () => {
+    const client = new CloudflareClient({
+      apiToken: "token",
+      accountId: "acc-123",
+    });
+    const taskWithOrderBy: CloudflareReportTask = {
+      ...sampleAccountTask,
+      apiSettings: {
+        ...sampleAccountTask.apiSettings,
+        orderBy: "datetime_ASC",
+      },
+    };
+    const query = client.buildGraphQLQuery(taskWithOrderBy);
+
+    expect(query).toContain("orderBy: [datetime_ASC]");
   });
 
   it("zonesスコープでマッピング付きメトリクスを含むクエリを正しく構築する", () => {
@@ -66,7 +83,7 @@ describe("CloudflareClient", () => {
     });
     const query = client.buildGraphQLQuery(sampleZoneTask);
 
-    expect(query).toContain("query GetZoneAnalytics($zoneTag: string!");
+    expect(query).toContain("query GetZoneAnalytics($zoneTag: String!");
     expect(query).toContain("ZoneHttpRequestsAdaptiveGroupsFilter_InputObject");
     expect(query).toContain("count");
     expect(query).toContain("sum { visits }");

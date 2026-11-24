@@ -27,59 +27,11 @@ const workerFilters: Record<string, unknown> =
  */
 export const reportTasks: CloudflareReportTask[] = [
   // =================================================================
-  // タスク1: Workerごとの詳細な実行ログ
+  // タスク1: Workerごとの詳細な実行ログ (Wall Timeを含む)
   // =================================================================
   {
     taskName: "worker_execution_logs",
     outputFile: "worker_execution_logs",
-    apiSettings: {
-      scope: "accounts",
-      dataset: "workersInvocationsAdaptive",
-      metrics: ["requests", "errors", "cpuTimeP50", "cpuTimeP90"],
-      dimensions: ["datetime", "scriptName", "status"],
-      filters: workerFilters,
-    },
-    spreadsheetHeaders: [
-      "datetime_jst",
-      "datetime_jst_floored",
-      "scriptName",
-      "status",
-      "requests",
-      "errors",
-      "cpuTimeP50",
-      "cpuTimeP90",
-    ],
-  },
-
-  // =================================================================
-  // タスク2: サイト全体のトラフィック分析
-  // =================================================================
-  {
-    taskName: "site_traffic_correlation",
-    outputFile: "site_traffic_correlation",
-    apiSettings: {
-      scope: "zones",
-      dataset: "httpRequestsAdaptiveGroups",
-      metrics: ["count", "pageViews:visits"],
-      dimensions: ["datetimeHour"],
-      filters: {
-        requestSource: "eyeball",
-      },
-    },
-    spreadsheetHeaders: [
-      "datetime_jst",
-      "datetime_jst_floored",
-      "count",
-      "pageViews",
-    ],
-  },
-
-  // =================================================================
-  // タスク3: Workerごとの詳細な実行ログ（Wall Timeを含む）
-  // =================================================================
-  {
-    taskName: "worker_execution_logs_advanced",
-    outputFile: "worker_execution_logs_advanced",
     apiSettings: {
       scope: "accounts",
       dataset: "workersInvocationsAdaptive",
@@ -111,7 +63,30 @@ export const reportTasks: CloudflareReportTask[] = [
   },
 
   // =================================================================
-  // タスク4: キャッシュ・パフォーマンス分析
+  // タスク2: サイト全体のトラフィック分析
+  // =================================================================
+  {
+    taskName: "site_traffic_correlation",
+    outputFile: "site_traffic_correlation",
+    apiSettings: {
+      scope: "zones",
+      dataset: "httpRequestsAdaptiveGroups",
+      metrics: ["count", "pageViews:visits"],
+      dimensions: ["datetimeHour"],
+      filters: {
+        requestSource: "eyeball",
+      },
+    },
+    spreadsheetHeaders: [
+      "datetime_jst",
+      "datetime_jst_floored",
+      "count",
+      "pageViews",
+    ],
+  },
+
+  // =================================================================
+  // タスク3: キャッシュ・パフォーマンス分析
   // =================================================================
   {
     taskName: "cache_performance_analysis",
@@ -136,7 +111,7 @@ export const reportTasks: CloudflareReportTask[] = [
   },
 
   // =================================================================
-  // タスク5: トラフィック・ソース分析（Bot/API）
+  // タスク4: トラフィック・ソース分析（Bot/API）
   // =================================================================
   {
     taskName: "traffic_source_analysis",

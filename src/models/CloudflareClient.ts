@@ -87,7 +87,7 @@ export class CloudflareClient {
 
     const primaryDimension = dimensions[0];
     const orderByClause =
-      orderBy === null || !primaryDimension
+      orderBy === null || orderBy === undefined || !primaryDimension
         ? ""
         : `, orderBy: [${primaryDimension}_ASC]`;
 
@@ -116,7 +116,7 @@ export class CloudflareClient {
 
     if (scope === "accounts") {
       return `
-      query GetAccountAnalytics($accountTag: string!, $filter: Account${capitalize(dataset)}Filter_InputObject) {
+      query GetAccountAnalytics($accountTag: String!, $filter: Account${capitalize(dataset)}Filter_InputObject) {
         viewer {
           accounts(filter: {accountTag: $accountTag}) {
             ${dataset}(filter: $filter, limit: ${MAX_RESULTS_LIMIT}${orderByClause}) {
@@ -134,7 +134,7 @@ export class CloudflareClient {
 
     if (scope === "zones") {
       return `
-      query GetZoneAnalytics($zoneTag: string!, $filter: Zone${capitalize(dataset)}Filter_InputObject) {
+      query GetZoneAnalytics($zoneTag: String!, $filter: Zone${capitalize(dataset)}Filter_InputObject) {
         viewer {
           zones(filter: {zoneTag: $zoneTag}) {
             ${dataset}(filter: $filter, limit: ${MAX_RESULTS_LIMIT}${orderByClause}) {
