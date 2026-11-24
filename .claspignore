@@ -1,0 +1,6 @@
+# すべてを無視
+/
+
+# distディレクトリのみ許可
+!dist/**
+!appsscript.json
